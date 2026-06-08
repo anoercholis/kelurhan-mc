@@ -7,21 +7,21 @@
   <table class="table">
     <thead>
       <tr>
-        <th>ID</th>
+        <th>NIK</th>
         <th>Nama</th>
+        <th>Jenis Kelamin</th>
         <th>Alamat</th>
-        <th>Action</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>{{ $id }}</td>
-        <td>{{ $nama }}</td>
-        <td>{{ $alamat }}</td>
-        <td>
-          {{ $action }}
-        </td>
-      </tr>
+      @foreach($warga as $item)
+    <tr>
+    <td>{{ $item->nik }}</td>
+    <td>{{ $item->nama }}</td>
+    <td>{{ $item->jk }}</td>
+    <td>{{ $item->alamat }}</td>
+    </tr
+     @endforeach
     </tbody>
   </table>
 @endsection

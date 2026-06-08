@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Penduduk;
 
 class KelurahanController extends Controller
 {
@@ -13,10 +14,7 @@ class KelurahanController extends Controller
 
     public function penduduk()
     {
-        $id = 1;
-        $nama = 'John Doe';
-        $alamat = 'Jl. Merdeka No. 123';
-        $action = 'Edit';
-        return view('penduduk', compact('id', 'nama', 'alamat', 'action'));
+        $warga = Penduduk::all(); 
+        return view('penduduk', compact('warga'));
     }
 }
