@@ -15,7 +15,7 @@ class SuratController extends Controller
     public function index()
     {
        $semuaSurat = Surat::with('penduduk')->get();
-       return view('surat_index', compact('semuaSurat'));
+       return view('surat.index', compact('semuaSurat'));
     }
 
     /**
@@ -68,7 +68,12 @@ class SuratController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // Mengambil data surat berdasarkan ID, lemparkan error 404 jika data tidak ditemukan
+        $surat = Surat::findOrFail($id);
+        
+        // Kirim data surat ke view edit menggunakan fungsi compact
+        return view('surat.edit', compact('surat'));
+
     }
 
     /**
@@ -76,7 +81,24 @@ class SuratController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $surat = Surat::findOrFail($id);
+
+        // Jalankan aturan validasi data server-side
+        $validatedData = $request->validate([
+            'nomor_surat' => 'required|max:50|unique:surats,nomor_surat,' . $surat->id,
+            'jenis_surat' => 'required',
+            'tanggal_ajuan' => 'required|date'
+        ], [
+            'nomor_surat.required' => 'Nomor surat wajib diisi.',
+            'nomor_surat.unique' => 'Nomor surat ini telah terdaftar pada sistem.'
+        ]);
+
+        // Update entitas data menggunakan fungsi update Eloquent
+        $surat->update($validatedData);
+
+        // Alihkan halaman ke indeks tabel utama disertai pesan kilat (flash message) sukses
+        return redirect()->route('surat.index')->with('sukses', 'Data surat berhasil diperbarui!');
+
     }
 
     /**
@@ -84,6 +106,14 @@ class SuratController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Cari objek data surat berdasarkan ID penunjuk
+        $surat = Surat::findOrFail($id);
+
+        // Eksekusi fungsi delete bawaan Eloquent ORM
+        $surat->delete();
+
+        // Kembalikan ke halaman index dengan alert flash message pemberitahuan
+        return redirect()->route('surat.index')->with('sukses', 'Data surat berhasil dihapus dari sistem.');
+
     }
 }
